@@ -1,0 +1,181 @@
+# ============================================
+# TELEGRAM BOT для заработка - .gitignore
+# ============================================
+
+# ========== СЕКРЕТЫ И КОНФИГУРАЦИЯ ==========
+.env
+.env.local
+.env.*.local
+secrets/
+config.local.*
+*.secret
+*.key
+*.pem
+
+# ========== ОКРУЖЕНИЕ PYTHON ==========
+# Виртуальное окружение
+venv/
+env/
+.venv/
+venv*/
+env*/
+ENV/
+env.bak/
+venv.bak/
+
+# Пип кэш
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ========== БАЗЫ ДАННЫХ ==========
+*.db
+*.sqlite
+*.sqlite3
+database.db
+data/
+*.dump
+*.backup
+
+# ========== ЛОГИ ==========
+*.log
+logs/
+log/
+*.logs
+*.log.*
+
+# ========== ОПЕРАЦИОННЫЕ СИСТЕМЫ ==========
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Windows
+Thumbs.db
+ehthumbs.db
+*.stackdump
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ========== IDE и РЕДАКТОРЫ ==========
+# VS Code
+.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+*.vsix
+*.code-workspace
+
+# PyCharm
+.idea/
+.idea/*
+*.iml
+*.ipr
+*.iws
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Atom
+.atom/
+.atomic_design/
+.remote-sync.json
+
+# ========== DOCKER ==========
+docker-compose.override.yml
+docker-data/
+
+# ========== ТЕСТЫ ==========
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.pytest_cache/
+
+# ========== ПРОЧЕЕ ==========
+# Временные файлы
+*.tmp
+*.temp
+*.bak
+*.swp
+*~
+*.orig
+
+# Файлы сессий
+*.session
+*.session.*
+
+# Файлы загрузок
+downloads/
+uploads/
+
+# Медиа файлы
+*.mp4
+*.mp3
+*.jpg
+*.png
+*.jpeg
+*.gif
+*.avi
+
+# Документы
+*.pdf
+*.doc
+*.docx
+*.xls
+*.xlsx
+
+# ========== ПРОЕКТ-СПЕЦИФИЧНЫЕ ==========
+# Файлы выплат и транзакций (не храним в git)
+payments/
+transactions/
+withdrawals/
+reports/
+
+# Конфиги пользователей
+user_configs/
+*.userconfig
+
+# Кэш бота
+cache/
+bot_cache/
+
+# Статические файлы (если будут)
+static/uploads/
+media/
+
+# ========== ВАШИ ПЕРСОНАЛЬНЫЕ ФАЙЛЫ ==========
+# Добавьте сюда свои файлы, которые не должны попасть в git
+# Например:
+# my_notes.txt
+# todo_list.md
+# passwords.txt
