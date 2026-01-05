@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>📺 Реклама</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,11 +28,6 @@
             margin-bottom: 20px;
             color: #fff;
         }
-        .ad-content {
-            font-size: 18px;
-            margin: 25px 0;
-            line-height: 1.6;
-        }
         .timer {
             font-size: 48px;
             font-weight: bold;
@@ -57,41 +51,27 @@
         }
         .btn:hover:not(:disabled) {
             transform: scale(1.05);
-            box-shadow: 0 5px 20px rgba(0,255,136,0.4);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📺 РЕКЛАМА</h1>
-        
-        <div class="ad-content">
-            <p>🎯 <b>Зарабатывайте на криптовалюте!</b></p>
-            <p>💰 бед ба шоан Ясмина Назране ели</p>
-        </div>
-        
-        <div class="timer" id="timer">30</div>
+        <h1>📺 ТЕСТ РЕКЛАМЫ</h1>
+        <div class="timer" id="timer">5</div>
         
         <button class="btn" id="confirmBtn" disabled>
             ✅ Я посмотрел рекламу
         </button>
         
-        <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
-            ⏱️ После просмотра 30 секунд кнопка станет активной
-        </p>
+        <p id="status">⏱️ Ждем 5 секунд...</p>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        
-        tg.expand();
-        
-        tg.BackButton.hide();
-        
         let timerElement = document.getElementById('timer');
-        let confirmBtn = document.getElementById('confirmBtn');  <!-- ИСПРАВЛЕНО! -->
+        let confirmBtn = document.getElementById('confirmBtn');
+        let statusElement = document.getElementById('status');
         
-        let seconds = 30;
+        let seconds = 5; // Только 5 секунд для теста
         
         function updateTimer() {
             seconds--;
@@ -100,27 +80,21 @@
             if (seconds <= 0) {
                 clearInterval(timerInterval);
                 confirmBtn.disabled = false;
-                confirmBtn.textContent = "✅ Я посмотрел рекламу (нажмите)";
-                timerElement.textContent = "✅ Готово!";
-                timerElement.style.color = "#00ff88";
+                statusElement.textContent = "✅ Готово! Нажмите кнопку";
+                timerElement.textContent = "✅";
             }
         }
         
         let timerInterval = setInterval(updateTimer, 1000);
         
         confirmBtn.addEventListener('click', function() {
-            tg.sendData(JSON.stringify({
-                action: 'ad_watched',
-                time_watched: 30,
-                timestamp: Date.now()
-            }));
+            statusElement.textContent = "🎉 Спасибо! Реклама просмотрена!";
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "✅ Готово";
             
-            tg.close();
+            // Для теста - просто сообщение
+            alert("Реклама просмотрена! В реальном боте эта информация отправится боту.");
         });
-        
-        if (tg.initDataUnsafe.start_param) {
-            console.log('Реклама для:', tg.initDataUnsafe.start_param);
-        }
     </script>
 </body>
 </html>
