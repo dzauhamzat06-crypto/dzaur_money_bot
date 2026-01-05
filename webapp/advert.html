@@ -65,7 +65,7 @@
         </button>
         
         <p id="status" style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
-            ⏱️ Ждем 30 секунд...
+            ⏱️ Смотрите рекламу 30 секунд
         </p>
     </div>
 
@@ -78,17 +78,16 @@
         // Таймер
         let seconds = 30;
         
-        // Telegram WebApp API (проверяем доступен ли)
+        // Telegram WebApp API
         let tg = null;
         try {
             tg = window.Telegram.WebApp;
             if (tg) {
                 tg.expand();
                 tg.BackButton.hide();
-                statusElement.textContent = "📱 Открыто в Telegram. Ждем 30 секунд...";
             }
         } catch (error) {
-            console.log("Telegram WebApp не доступен, работаем в браузере");
+            console.log("Работаем в браузере");
         }
         
         // Таймер обратного отсчета
@@ -99,7 +98,7 @@
             if (seconds <= 0) {
                 clearInterval(timerInterval);
                 confirmBtn.disabled = false;
-                statusElement.textContent = "✅ Готово! Нажмите кнопку";
+                statusElement.textContent = "✅ Готово! Нажмите кнопку ниже";
                 timerElement.textContent = "✅";
                 timerElement.style.color = "#00ff88";
             }
@@ -123,7 +122,6 @@
                     }));
                     tg.close();
                 } catch (error) {
-                    console.log("Не удалось отправить данные в Telegram");
                     alert("Реклама просмотрена! Вернитесь в бота.");
                 }
             } else {
