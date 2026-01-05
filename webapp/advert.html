@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>📺 Реклама</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #fff;
+        }
+        .ad-content {
+            font-size: 18px;
+            margin: 25px 0;
+            line-height: 1.6;
+        }
+        .timer {
+            font-size: 48px;
+            font-weight: bold;
+            margin: 30px 0;
+            color: #00ff88;
+        }
+        .btn {
+            background: #00ff88;
+            color: #000;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+        .btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(0,255,136,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📺 РЕКЛАМА</h1>
+        
+        <div class="ad-content">
+            <p>🎯 <b>Зарабатывайте на криптовалюте!</b></p>
+            <p>💰 От $1000 в месяц</p>
+            <p>📈 Обучение с нуля</p>
+            <p>👨‍🏫 Личный наставник</p>
+        </div>
+        
+        <div class="timer" id="timer">30</div>
+        
+        <button class="btn" id="confirmBtn" disabled>
+            ✅ Я посмотрел рекламу
+        </button>
+        
+        <p style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+            ⏱️ После просмотра 30 секунд кнопка станет активной
+        </p>
+    </div>
+
+    <script>
+        // Telegram Web App API
+        let tg = window.Telegram.WebApp;
+        
+        // Раскрываем на весь экран
+        tg.expand();
+        
+        // Скрываем кнопку назад
+        tg.BackButton.hide();
+        
+        // Элементы
+        let timerElement = document.getElementById('timer');
+        let confirmBtn = document.getElementById('confirm-btn');
+        
+        // Таймер обратного отсчета (30 секунд)
+        let seconds = 30;
+        
+        function updateTimer() {
+            seconds--;
+            timerElement.textContent = seconds;
+            
+            if (seconds <= 0) {
+                // Время вышло
+                clearInterval(timerInterval);
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "✅ Я посмотрел рекламу (нажмите)";
+                timerElement.textContent = "✅ Готово!";
+                timerElement.style.color = "#00ff88";
+            }
+        }
+        
+        // Запускаем таймер
+        let timerInterval = setInterval(updateTimer, 1000);
+        
+        // Обработчик кнопки
+        confirmBtn.addEventListener('click', function() {
+            // Отправляем данные в бота
+            tg.sendData(JSON.stringify({
+                action: 'ad_watched',
+                time_watched: 30,
+                timestamp: Date.now()
+            }));
+            
+            // Закрываем Web App
+            tg.close();
+        });
+        
+        // Запрашиваем данные пользователя (если есть в start_param)
+        if (tg.initDataUnsafe.start_param) {
+            console.log('Реклама для:', tg.initDataUnsafe.start_param);
+        }
+    </script>
+</body>
+</html>
