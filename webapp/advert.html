@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>📺 Реклама</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,23 +57,41 @@
 </head>
 <body>
     <div class="container">
-        <h1>📺 ТЕСТ РЕКЛАМЫ</h1>
-        <div class="timer" id="timer">5</div>
+        <h1>📺 РЕКЛАМА</h1>
+        <div class="timer" id="timer">30</div>
         
         <button class="btn" id="confirmBtn" disabled>
             ✅ Я посмотрел рекламу
         </button>
         
-        <p id="status">⏱️ Ждем 5 секунд...</p>
+        <p id="status" style="margin-top: 20px; font-size: 14px; opacity: 0.8;">
+            ⏱️ Ждем 30 секунд...
+        </p>
     </div>
 
     <script>
+        // Элементы
         let timerElement = document.getElementById('timer');
         let confirmBtn = document.getElementById('confirmBtn');
         let statusElement = document.getElementById('status');
         
-        let seconds = 5; // Только 5 секунд для теста
+        // Таймер
+        let seconds = 30;
         
+        // Telegram WebApp API (проверяем доступен ли)
+        let tg = null;
+        try {
+            tg = window.Telegram.WebApp;
+            if (tg) {
+                tg.expand();
+                tg.BackButton.hide();
+                statusElement.textContent = "📱 Открыто в Telegram. Ждем 30 секунд...";
+            }
+        } catch (error) {
+            console.log("Telegram WebApp не доступен, работаем в браузере");
+        }
+        
+        // Таймер обратного отсчета
         function updateTimer() {
             seconds--;
             timerElement.textContent = seconds;
@@ -82,18 +101,35 @@
                 confirmBtn.disabled = false;
                 statusElement.textContent = "✅ Готово! Нажмите кнопку";
                 timerElement.textContent = "✅";
+                timerElement.style.color = "#00ff88";
             }
         }
         
         let timerInterval = setInterval(updateTimer, 1000);
         
+        // Обработчик кнопки
         confirmBtn.addEventListener('click', function() {
             statusElement.textContent = "🎉 Спасибо! Реклама просмотрена!";
             confirmBtn.disabled = true;
             confirmBtn.textContent = "✅ Готово";
             
-            // Для теста - просто сообщение
-            alert("Реклама просмотрена! В реальном боте эта информация отправится боту.");
+            // Если открыто в Telegram - отправляем данные боту
+            if (tg) {
+                try {
+                    tg.sendData(JSON.stringify({
+                        action: 'ad_watched',
+                        time_watched: 30,
+                        timestamp: Date.now()
+                    }));
+                    tg.close();
+                } catch (error) {
+                    console.log("Не удалось отправить данные в Telegram");
+                    alert("Реклама просмотрена! Вернитесь в бота.");
+                }
+            } else {
+                // Для теста в браузере
+                alert("Реклама просмотрена! В реальном боте эта информация отправится боту.");
+            }
         });
     </script>
 </body>
