@@ -84,29 +84,23 @@
     </div>
 
     <script>
-        // Telegram Web App API
         let tg = window.Telegram.WebApp;
         
-        // Раскрываем на весь экран
-        tg.expand();
+         tg.expand();
         
-        // Скрываем кнопку назад
-        tg.BackButton.hide();
+         tg.BackButton.hide();
         
-        // Элементы
-        let timerElement = document.getElementById('timer');
+         let timerElement = document.getElementById('timer');
         let confirmBtn = document.getElementById('confirm-btn');
         
-        // Таймер обратного отсчета (30 секунд)
-        let seconds = 30;
+         let seconds = 30;
         
         function updateTimer() {
             seconds--;
             timerElement.textContent = seconds;
             
             if (seconds <= 0) {
-                // Время вышло
-                clearInterval(timerInterval);
+                 clearInterval(timerInterval);
                 confirmBtn.disabled = false;
                 confirmBtn.textContent = "✅ Я посмотрел рекламу (нажмите)";
                 timerElement.textContent = "✅ Готово!";
@@ -114,24 +108,19 @@
             }
         }
         
-        // Запускаем таймер
-        let timerInterval = setInterval(updateTimer, 1000);
+       let timerInterval = setInterval(updateTimer, 1000);
         
-        // Обработчик кнопки
-        confirmBtn.addEventListener('click', function() {
-            // Отправляем данные в бота
-            tg.sendData(JSON.stringify({
+         confirmBtn.addEventListener('click', function() {
+             tg.sendData(JSON.stringify({
                 action: 'ad_watched',
                 time_watched: 30,
                 timestamp: Date.now()
             }));
             
-            // Закрываем Web App
-            tg.close();
+             tg.close();
         });
         
-        // Запрашиваем данные пользователя (если есть в start_param)
-        if (tg.initDataUnsafe.start_param) {
+         if (tg.initDataUnsafe.start_param) {
             console.log('Реклама для:', tg.initDataUnsafe.start_param);
         }
     </script>
