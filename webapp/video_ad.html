@@ -13,6 +13,7 @@
             color: white;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
         }
@@ -22,29 +23,25 @@
             padding: 40px;
             border-radius: 20px;
             max-width: 500px;
+            width: 90%;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
         h1 {
-            font-size: 28px;
+            font-size: 24px;
             margin-bottom: 20px;
+            color: #fff;
         }
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 */
-            height: 0;
-            margin: 20px 0;
-        }
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+        .video-link {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
             border-radius: 10px;
+            margin: 20px 0;
+            word-break: break-all;
         }
         .timer {
-            font-size: 24px;
-            margin: 20px 0;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 30px 0;
             color: #00ff88;
         }
         .btn {
@@ -56,43 +53,71 @@
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 20px;
         }
         .btn:disabled {
             background: #666;
             cursor: not-allowed;
+        }
+        .btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+        .instructions {
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 14px;
+            text-align: left;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📺 ВИДЕО-РЕКЛАМА</h1>
-        <p>Посмотрите видео полностью для продолжения</p>
         
-        <div class="video-container">
-            <!-- ВСТАВЬ СВОЮ ССЫЛКУ НА YOUTUBЕ ЗДЕСЬ -->
-            <iframe 
-                src="https://www.youtube.com/embed/VIDEO_ID?autoplay=1&controls=0&modestbranding=1" 
-                frameborder="0" 
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                allowfullscreen>
-            </iframe>
+        <div class="instructions">
+            <p><b>Инструкция:</b></p>
+            <p>1. Нажмите на ссылку ниже</p>
+            <p>2. Посмотрите видео 30 секунд</p>
+            <p>3. Вернитесь в бота и нажмите кнопку</p>
+        </div>
+        
+        <div class="video-link">
+            <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" 
+               target="_blank" 
+               style="color: #00ff88; text-decoration: none; font-weight: bold;">
+               🔗 Нажмите чтобы открыть видео
+            </a>
+            <p style="font-size: 12px; margin-top: 5px; opacity: 0.8;">
+                Видео откроется в новой вкладке
+            </p>
         </div>
         
         <div class="timer" id="timer">30</div>
         
         <button class="btn" id="confirmBtn" disabled>
-            ✅ Я посмотрел видео
+            ⏳ Ждем 30 секунд...
         </button>
+        
+        <p style="margin-top: 20px; font-size: 12px; opacity: 0.7;">
+            🔄 После таймера кнопка станет активной
+        </p>
     </div>
 
     <script>
+        // Telegram WebApp
         let tg = window.Telegram.WebApp;
         tg.expand();
         tg.BackButton.hide();
         
+        // Элементы
         let timerElement = document.getElementById('timer');
         let confirmBtn = document.getElementById('confirmBtn');
         
+        // Таймер 30 секунд
         let seconds = 30;
         
         function updateTimer() {
@@ -102,20 +127,37 @@
             if (seconds <= 0) {
                 clearInterval(timerInterval);
                 confirmBtn.disabled = false;
-                timerElement.textContent = "✅ Видео просмотрено";
+                confirmBtn.textContent = "✅ Я посмотрел видео";
+                confirmBtn.style.background = "#00ff88";
+                timerElement.textContent = "✅ Готово!";
+                timerElement.style.color = "#00ff88";
             }
         }
         
+        // Запускаем таймер
         let timerInterval = setInterval(updateTimer, 1000);
         
+        // Обработчик кнопки
         confirmBtn.addEventListener('click', function() {
+            // Отправляем данные боту
             tg.sendData(JSON.stringify({
                 action: 'ad_watched',
                 type: 'video',
                 time_watched: 30,
                 timestamp: Date.now()
             }));
+            
+            // Закрываем Web App
             tg.close();
+        });
+        
+        // Сохраняем время начала
+        let startTime = Date.now();
+        
+        // При возвращении на страницу проверяем время
+        window.addEventListener('focus', function() {
+            let timeSpent = Math.floor((Date.now() - startTime) / 1000);
+            console.log('Пользователь провел на странице:', timeSpent, 'секунд');
         });
     </script>
 </body>
