@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📺 Видео-реклама #2</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: #000;
+            color: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .video-container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: #111;
+        }
+        
+        video {
+            width: 100%;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        
+        .controls {
+            padding: 20px;
+            background: #222;
+            text-align: center;
+            border-top: 3px solid #764ba2;
+        }
+        
+        button {
+            background: #f59e0b;
+            color: #000;
+            border: none;
+            padding: 18px 40px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 12px;
+            cursor: pointer;
+            width: 100%;
+            max-width: 400px;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+        
+        button:disabled {
+            background: #666;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #d97706;
+            transform: scale(1.05);
+            box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
+        }
+        
+        .info {
+            color: #aaa;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .status {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            font-size: 14px;
+            min-height: 40px;
+        }
+        
+        .video-info {
+            text-align: center;
+            padding: 10px;
+            color: #888;
+            font-size: 12px;
+            background: #1a1a1a;
+        }
+        
+        .timer {
+            font-size: 14px;
+            color: #f59e0b;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📺 ВИДЕО-РЕКЛАМА #2</h1>
+        <p>15 секунд • MoneyMagnet</p>
+    </div>
+    
+    <div class="video-container">
+        <video id="adVideo" controls autoplay muted playsinline>
+            <source src="ad_video_2.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
+    
+    <div class="video-info">
+        ⏱️ Длительность: 15 секунд • 📺 Осталось просмотров: ∞
+        <div class="timer" id="timer"></div>
+    </div>
+    
+    <div class="controls">
+        <button id="confirmBtn" onclick="confirmWatch()" disabled>
+            ⏳ ДОСМОТРИТЕ ВИДЕО ДО КОНЦА...
+        </button>
+        
+        <div class="status" id="status">
+            ▶️ Запустите видео для просмотра...
+        </div>
+        
+        <div class="info">
+            ✅ После просмотра вы получите доступ к боту на 5 часов
+        </div>
+    </div>
+
+    <script>
+        // Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        
+        // Инициализация
+        tg.expand();
+        tg.BackButton.hide();
+        
+        console.log("📺 Видео-реклама #2 загружена");
+        console.log("👤 Пользователь:", tg.initDataUnsafe.user);
+        
+        // Элементы
+        const video = document.getElementById('adVideo');
+        const confirmBtn = document.getElementById('confirmBtn');
+        const statusElement = document.getElementById('status');
+        const timerElement = document.getElementById('timer');
+        
+        let videoWatched = false;
+        let currentTime = 0;
+        let totalDuration = 15; // 15 секунд
+        
+        // 🔥 ОБНОВЛЕНИЕ ТАЙМЕРА
+        function updateTimer() {
+            if (video.duration) {
+                const remaining = Math.max(0, totalDuration - currentTime);
+                timerElement.textContent = `⏳ Осталось: ${remaining.toFixed(1)} сек`;
+                
+                if (remaining <= 0 && !videoWatched) {
+                    videoWatched = true;
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = "✅ Я ПОСМОТРЕЛ ВИДЕО (НАЖМИТЕ)";
+                    statusElement.innerHTML = "🎉 Видео просмотрено! Нажмите кнопку подтверждения";
+                    statusElement.style.background = "rgba(245, 158, 11, 0.2)";
+                }
+            }
+        }
+        
+        // 🔥 СЛУШАТЕЛЬ: ОБНОВЛЕНИЕ ВРЕМЕНИ ВИДЕО
+        video.addEventListener('timeupdate', function() {
+            currentTime = video.currentTime;
+            updateTimer();
+        });
+        
+        // 🔥 СЛУШАТЕЛЬ: КОГДА ВИДЕО ЗАКОНЧИЛОСЬ
+        video.addEventListener('ended', function() {
+            console.log("✅ Видео просмотрено до конца");
+            videoWatched = true;
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = "✅ Я ПОСМОТРЕЛ ВИДЕО (НАЖМИТЕ)";
+            statusElement.innerHTML = "🎉 Видео просмотрено! Нажмите кнопку подтверждения";
+            statusElement.style.background = "rgba(245, 158, 11, 0.2)";
+            timerElement.textContent = "✅ Видео завершено!";
+        });
+        
+        // 🔥 СЛУШАТЕЛЬ: КОГДА ВИДЕО ПАУЗА
+        video.addEventListener('pause', function() {
+            statusElement.innerHTML = "⏸️ Видео на паузе. Продолжите просмотр...";
+        });
+        
+        // 🔥 СЛУШАТЕЛЬ: КОГДА ВИДЕО ИГРАЕТ
+        video.addEventListener('play', function() {
+            statusElement.innerHTML = "▶️ Идет просмотр видео...";
+        });
+        
+        // 🔥 ФУНКЦИЯ ПОДТВЕРЖДЕНИЯ
+        function confirmWatch() {
+            if (confirmBtn.disabled || !videoWatched) return;
+            
+            confirmBtn.disabled = true;
+            confirmBtn.textContent = "⏳ ОТПРАВЛЯЕМ ДАННЫЕ...";
+            
+            // Подготавливаем данные для отправки
+            const webAppData = {
+                action: 'ad_watched',
+                type: 'video_ad',
+                ad_number: 2,
+                time_watched: 15,
+                timestamp: Date.now(),
+                user_id: tg.initDataUnsafe.user?.id,
+                username: tg.initDataUnsafe.user?.username || 'user',
+                first_name: tg.initDataUnsafe.user?.first_name || 'User',
+                completed: true,
+                video_watched: true,
+                source: 'video_ad_2'
+            };
+            
+            console.log("📤 Отправляем данные в бота:", webAppData);
+            
+            // 🔥 ОТПРАВЛЯЕМ ДАННЫЕ В БОТА
+            try {
+                tg.sendData(JSON.stringify(webAppData));
+                console.log("✅ Данные успешно отправлены!");
+                
+                statusElement.innerHTML = "✅ Данные отправлены! Закрываю окно...";
+                statusElement.style.background = "rgba(245, 158, 11, 0.3)";
+                
+                // Закрываем WebApp через 1.5 секунды
+                setTimeout(() => {
+                    tg.close();
+                }, 1500);
+                
+            } catch (error) {
+                console.error("❌ Ошибка при отправке данных:", error);
+                statusElement.innerHTML = "❌ Ошибка отправки. Попробуйте снова.";
+                statusElement.style.background = "rgba(239, 68, 68, 0.2)";
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = "🔄 ПОВТОРИТЬ ОТПРАВКУ";
+            }
+        }
+        
+        // Автозапуск видео через 2 секунды
+        window.onload = function() {
+            console.log("📺 Видео-реклама #2 готова");
+            
+            setTimeout(() => {
+                if (video.paused) {
+                    video.play().catch(e => {
+                        console.log("Автозапуск не удался, нужно ручное воспроизведение");
+                        statusElement.innerHTML = "▶️ Нажмите PLAY для запуска видео...";
+                    });
+                }
+            }, 2000);
+            
+            // Стартовый таймер
+            updateTimer();
+        };
+    </script>
+</body>
+</html>
